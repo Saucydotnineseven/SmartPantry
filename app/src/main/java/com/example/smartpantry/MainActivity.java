@@ -64,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(view ->
-                startActivity(new Intent(MainActivity.this, AddEditActivity.class)));}
+                startActivity(new Intent(MainActivity.this, AddEditActivity.class)));
+        // Open the Suggested Recipes screen
+        findViewById(R.id.btnSuggest).setOnClickListener(view ->
+                startActivity(new Intent(MainActivity.this, SuggestedRecipesActivity.class)));}
 
     // onResume runs every time this screen becomes visible again,
     // so the list refreshes after adding/editing on another screen.
