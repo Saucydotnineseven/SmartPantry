@@ -1,5 +1,6 @@
 package com.example.smartpantry;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -49,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PantryAdapter(new ArrayList<>(), new PantryAdapter.Listener() {
             @Override
             public void onItemClick(PantryItem item) {
-                // Step 5 will open the Edit screen here
-                Toast.makeText(MainActivity.this,
-                        "Edit screen comes in Step 5: " + item.getName(), Toast.LENGTH_SHORT).show();
+                // Open the same screen in EDIT mode: pass the item's id in the Intent
+                Intent intent = new Intent(MainActivity.this, AddEditActivity.class);
+                intent.putExtra(AddEditActivity.EXTRA_ITEM_ID, item.getId());
+                startActivity(intent);
             }
-
             @Override
             public void onItemLongClick(PantryItem item) {
                 confirmDelete(item);
@@ -61,14 +62,9 @@ public class MainActivity extends AppCompatActivity {
         });
         recycler.setAdapter(adapter);
 
-        // TEMPORARY: adds a sample row so you can see the list working.
-        // Step 5 replaces this with the real Add Ingredient screen.
         FloatingActionButton fab = findViewById(R.id.fabAdd);
-        fab.setOnClickListener(view -> {
-            db.addPantryItem(new PantryItem("Sample item", 2, "pcs", ""));
-            loadPantry();
-        });
-    }
+        fab.setOnClickListener(view ->
+                startActivity(new Intent(MainActivity.this, AddEditActivity.class)));}
 
     // onResume runs every time this screen becomes visible again,
     // so the list refreshes after adding/editing on another screen.
