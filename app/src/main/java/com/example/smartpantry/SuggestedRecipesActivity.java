@@ -1,5 +1,6 @@
 package com.example.smartpantry;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,9 +35,10 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         adapter = new RecipeAdapter(new ArrayList<>(), recipe -> {
-            // Step 7 will open the Recipe Detail screen here
-            Toast.makeText(this, "Detail screen comes in Step 7: " + recipe.getName(),
-                    Toast.LENGTH_SHORT).show();
+            // Open the detail screen and pass the recipe's id in the Intent
+            Intent intent = new Intent(SuggestedRecipesActivity.this, RecipeDetailActivity.class);
+            intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.getId());
+            startActivity(intent);
         });
         recycler.setAdapter(adapter);
 
