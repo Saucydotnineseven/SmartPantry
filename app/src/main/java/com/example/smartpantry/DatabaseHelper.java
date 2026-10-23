@@ -259,4 +259,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
         return list;
     }
+    // Load ONE recipe (with its ingredients) by id, for the detail screen.
+    public Recipe getRecipe(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query(TABLE_RECIPES, null, COL_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null);
+        Recipe recipe = null;
+        if (c.moveToFirst()) {
+            recipe = new Recipe(id,
+                    c.getString(c.getColumnIndexOrThrow(COL_NAME)),
+                    c.getString(c.getColumnIndexOrThrow(COL_STEPS)));
+            recipe.setIngredients(getIngredientsForRecipe(db, id));
+        }
+        c.close();
+        return recipe; // null if no recipe has this id
+    }
 }
