@@ -5,7 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.SharedPreferences;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -27,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private PantryAdapter adapter;
     private TextView txtEmpty;
-
+    private BottomNavigationView bottomNav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +72,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddEditActivity.class)));
         // Open the Suggested Recipes screen
         findViewById(R.id.btnSuggest).setOnClickListener(view ->
-                startActivity(new Intent(MainActivity.this, SuggestedRecipesActivity.class)));}
+                startActivity(new Intent(MainActivity.this, SuggestedRecipesActivity.class)));         // Bottom navigation: Pantry (this screen), Recipes, Settings
+        bottomNav = findViewById(R.id.bottomNav);
+        bottomNav.setOnItemSelectedListener(menuItem -> {
+            int id = menuItem.getItemId();
+            if (id == R.id.nav_recipes) {
+                startActivity(new Intent(MainActivity.this, SuggestedRecipesActivity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+            return true;
+        });}
 
     // onResume runs every time this screen becomes visible again,
     // so the list refreshes after adding/editing on another screen.
@@ -75,6 +90,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadPantry();
+        bottomNav.setSelectedItemId(R.id.nav_pantry); // highlight "Pantry" when we return
+        showExpiryAlert();
+    }
+
+    // If the setting is ON, warn about items that are expired or expire within 3 days
+    private void showExpiryAlert() {
+        SharedPreferences prefs = getSharedPreferences(SettingsActivity.PREFS, MODE_PRIVATE);
+        if (!prefs.getBoolean(SettingsActivity.KEY_ALERTS, false)) {
+            return; // alerts are switched off
+        }
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        long limit = System.currentTimeMillis() + 3L * 24 * 60 * 60 * 1000; // now + 3 days
+        int count = 0;
+        for (PantryItem item : db.getAllPantryItems()) {
+            String expiry = item.getExpiryDate();
+            if (expiry == null || expiry.isEmpty()) continue; // no date = skip
+            try {
+                Date date = fmt.parse(expiry);
+                if (date != null && date.getTime() <= limit) count++;
+            } catch (ParseException e) {
+                // ignore unreadable dates
+            }
+        }
+        if (count > 0) {
+            Toast.makeText(this, count + " item(s) expired or expiring soon",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     // Read from the database, give the data to the adapter, show/hide the empty message
