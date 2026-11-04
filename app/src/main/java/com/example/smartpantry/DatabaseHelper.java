@@ -14,7 +14,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "smart_pantry.db";
-    private static final int DB_VERSION = 2; // bump this when the schema changes
+    private static final int DB_VERSION = 3; // bump this when the database needs an upgrade
 
     // ---- Table and column names (constants avoid typos) ----
     public static final String TABLE_PANTRY = "pantry";
@@ -37,8 +37,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Called ONCE, the first time the database is created.
     @Override
     public void onCreate(SQLiteDatabase db) {
+        createTables(db);
+
+        // A new installation needs the recipe catalogue immediately.
+        seedRecipes(db);
+    }
+
+    private void createTables(SQLiteDatabase db) {
         // Pantry: what the user currently owns
-        db.execSQL("CREATE TABLE " + TABLE_PANTRY + " ("
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PANTRY + " ("
                 + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COL_NAME + " TEXT NOT NULL, "
                 + COL_QTY + " REAL NOT NULL, "
@@ -46,13 +53,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_EXPIRY + " TEXT)");
 
         // Recipes: one row per recipe
-        db.execSQL("CREATE TABLE " + TABLE_RECIPES + " ("
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_RECIPES + " ("
                 + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COL_NAME + " TEXT NOT NULL, "
                 + COL_STEPS + " TEXT NOT NULL)");
 
         // Ingredients needed by each recipe (one-to-many: one recipe, many ingredients)
-        db.execSQL("CREATE TABLE " + TABLE_RECIPE_ING + " ("
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_RECIPE_ING + " ("
                 + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COL_RECIPE_ID + " INTEGER NOT NULL, "
                 + COL_NAME + " TEXT NOT NULL, "
@@ -62,13 +69,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + TABLE_RECIPES + "(" + COL_ID + "))");
     }
 
-    // Called when DB_VERSION increases. Simple approach: drop and recreate.
+    // Preserve the user's pantry when the database schema version changes.
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_ING);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PANTRY);
-        onCreate(db);         seedRecipes(db);
+        // Ensure older installations have every table without inserting a
+        // second recipe catalogue into databases that already contain one.
+        createTables(db);
+
+        // These tables already exist in supported older versions. Checking the
+        // catalogue lets us repair an empty one without duplicating recipes.
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_RECIPES, null);
+        boolean needsSeed = !cursor.moveToFirst() || cursor.getInt(0) == 0;
+        cursor.close();
+        if (needsSeed) {
+            seedRecipes(db);
+        }
 
     }
 

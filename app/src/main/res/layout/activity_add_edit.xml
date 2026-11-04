@@ -1,72 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Add / Edit Ingredient form. ScrollView so it still works when the keyboard is open. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pantry_background"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- Title changes between "Add Ingredient" and "Edit Ingredient" in Java -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PANTRY UPDATE"
+            android:textColor="@color/pantry_primary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+
         <TextView
             android:id="@+id/txtFormTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Add Ingredient"
-            android:textSize="24sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="18dp"
+            android:text="Add ingredient"
+            android:textColor="@color/pantry_text"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/edtName"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ingredient name (e.g. tomato)"
-            android:inputType="textCapWords"
-            android:maxLength="40" />
+            app:cardBackgroundColor="@color/pantry_surface"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="1dp"
+            app:strokeColor="@color/pantry_outline"
+            app:strokeWidth="1dp">
 
-        <EditText
-            android:id="@+id/edtQuantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Quantity (e.g. 3 or 0.5)"
-            android:inputType="numberDecimal" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Unit" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingredient"
+                    android:textColor="@color/pantry_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinUnit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp" />
+                <EditText
+                    android:id="@+id/edtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="6dp"
+                    android:backgroundTint="@color/pantry_primary"
+                    android:hint="e.g. tomatoes"
+                    android:inputType="textCapWords"
+                    android:maxLength="40"
+                    android:paddingStart="8dp"
+                    android:textColor="@color/pantry_text"
+                    android:textColorHint="@color/pantry_muted" />
 
-        <EditText
-            android:id="@+id/edtExpiry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Expiry date (optional): yyyy-MM-dd"
-            android:inputType="date" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Quantity"
+                    android:textColor="@color/pantry_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtQuantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="6dp"
+                    android:backgroundTint="@color/pantry_primary"
+                    android:hint="e.g. 3 or 0.5"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="8dp"
+                    android:textColor="@color/pantry_text"
+                    android:textColorHint="@color/pantry_muted" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Unit"
+                    android:textColor="@color/pantry_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinUnit"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Expiry date  ·  optional"
+                    android:textColor="@color/pantry_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edtExpiry"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="6dp"
+                    android:backgroundTint="@color/pantry_primary"
+                    android:hint="yyyy-MM-dd"
+                    android:inputType="date"
+                    android:paddingStart="8dp"
+                    android:textColor="@color/pantry_text"
+                    android:textColorHint="@color/pantry_muted" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Save" />
+            android:layout_height="54dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/pantry_primary"
+            android:text="Save ingredient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:cornerRadius="17dp" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/pantry_background"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/pantry_primary"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 </ScrollView>

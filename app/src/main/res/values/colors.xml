@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#FF17221D</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="pantry_primary">#FF1F6B50</color>
+    <color name="pantry_primary_dark">#FF164E3B</color>
+    <color name="pantry_secondary">#FFC8E88B</color>
+    <color name="pantry_background">#FFF4F7F1</color>
+    <color name="pantry_surface">#FFFFFFFF</color>
+    <color name="pantry_text">#FF18231D</color>
+    <color name="pantry_muted">#FF68756D</color>
+    <color name="pantry_accent">#FFE58A55</color>
+    <color name="pantry_outline">#FFE2E9E1</color>
 </resources>
