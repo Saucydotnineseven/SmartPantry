@@ -3,7 +3,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 
-OUT = Path("submission/402411462_Thomas_MobileAppDev700_Assignment_DRAFT.docx")
+OUT = Path("submission/402411462_Thomas.M_MAD700_Assignment.docx")
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
